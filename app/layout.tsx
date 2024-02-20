@@ -1,17 +1,17 @@
 import './global.css';
 
-export const metadata = {
-	title: 'Flexibble',
-	description: 'Showcase and discover remarkable developer projects'
-};
+// export const metadata = { //TODO think how do dis part correct
+// 	// title: 'Flexibble',
+// 	// description: 'Showcase and discover remarkable developer projects'
+// };
 
-export default function RootLayout({
-	children
-}: {
-	children: React.ReactNode;
-}) {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<html lang="en">
+			<head>
+				<title>News portal | Next</title>
+				<link rel="icon" type="image/x-icon" href="/icons/mail3.svg" />
+			</head>
 			<body>
 				{/* <Navbar /> */}
 				<main>{children}</main>
@@ -19,4 +19,6 @@ export default function RootLayout({
 			</body>
 		</html>
 	);
-}
+};
+
+export default RootLayout;
