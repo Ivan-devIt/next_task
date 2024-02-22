@@ -22,21 +22,22 @@ const Home = async () => {
 					eum! Adipisci, optio?
 				</p>
 			</div>
-			<div>
+			{/* <div>
 				{posts.map(({ title, id, description }) => (
 					<div key={id}>
 						<h4>{title}</h4>
 						<p>{description}</p>
 					</div>
 				))}
-			</div>
+			</div> */}
 		</>
 	);
 };
 
 async function getAllPosts(): Promise<Post[]> {
 	const res = await fetch(`${process.env.BASE_URL}/api/posts`, {
-		cache: 'no-store' //TODO
+		// cache: 'no-store' //TODO
+		next: { revalidate: 10 } // TODO
 	});
 
 	return res.json();

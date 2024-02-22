@@ -12,14 +12,25 @@ datasource db {
 
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
+  // id               String @id @default(cuid())
+  id               Int @id @default(autoincrement())
+  name             String
+  email            String @unique
+  password         String
+  role             E_Role  
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt 
 }
 
 model Post {
   id                  Int @id @default(autoincrement())
   title               String 
   description         String
+}
+
+enum E_Role {
+  CUSTOMER
+  MANAGER
+  ADMIN
+  SUPER_ADMIN
 }

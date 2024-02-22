@@ -1,0 +1,1 @@
+export { getPaginataionOptions } from './getPaginataionOptions';
