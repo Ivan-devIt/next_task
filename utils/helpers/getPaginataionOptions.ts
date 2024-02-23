@@ -1,3 +1,5 @@
+import { E_SearchParam } from '@/types/search.params.enum';
+
 export async function getPaginataionOptions({
   searchParams,
   count,
@@ -11,7 +13,7 @@ export async function getPaginataionOptions({
   maxSkip?: number;
   defaultPage?: number;
 }) {
-  const skipParam = Number(searchParams.get('skip') || defaultSkip);
+  const skipParam = Number(searchParams.get(E_SearchParam.skip) || defaultSkip);
 
   const skipValue =
     !!skipParam && skipParam <= maxSkip && skipParam <= count
@@ -20,7 +22,7 @@ export async function getPaginataionOptions({
         ? count
         : defaultSkip;
 
-  const pageParam = Number(searchParams.get('page') || defaultPage);
+  const pageParam = Number(searchParams.get(E_SearchParam.page) || defaultPage);
 
   const pageValue = !!pageParam
     ? pageParam <= Math.ceil(count / skipValue)

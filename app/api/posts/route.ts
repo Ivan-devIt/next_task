@@ -14,20 +14,20 @@ import { NextResponse } from 'next/server';
 // }
 
 export async function GET(req: Request) {
-	try {
-		const { searchParams } = new URL(req.url!);
-		console.log('===req.url====', req.url);
-		console.log('==searchParams====', searchParams.get('q'));
+  try {
+    const { searchParams } = new URL(req.url!);
+    console.log('===req.url====', req.url);
+    console.log('==searchParams====', searchParams.get('q'));
 
-		const data = await prisma.post.findMany({});
+    const data = await prisma.post.findMany({});
 
-		// throw new Error('Some thing wrong!');
+    // throw new Error('Some thing wrong!');
 
-		return NextResponse.json({ status: 200, data });
-	} catch (err) {
-		// FIX
-		return NextResponse.json({ status: 500, message: err.message }); //TODO
-	}
+    return NextResponse.json({ status: 200, data });
+  } catch (err) {
+    // FIX
+    return NextResponse.json({ status: 500, message: 'err.message' }); //TODO
+  }
 }
 
 // export async function GET(req: Request) {
