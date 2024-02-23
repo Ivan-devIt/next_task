@@ -1,9 +1,13 @@
-// import { Post } from '@prisma/client';
+import { E_Routes } from '@/types/routes.enum';
+import { config } from '@/utils/config';
+import { User } from '@prisma/client';
 
 const Home = async () => {
   //   const posts = await getAllPosts();
 
   //   console.log('==posts==', posts);
+
+  const { data: users } = await getAllUsers();
 
   return (
     <>
@@ -22,14 +26,15 @@ const Home = async () => {
           eum! Adipisci, optio?
         </p>
       </div>
-      {/* <div>
-				{posts.map(({ title, id, description }) => (
-					<div key={id}>
-						<h4>{title}</h4>
-						<p>{description}</p>
-					</div>
-				))}
-			</div> */}
+      <div>
+        {!!users &&
+          users.map(({ id, name, email }) => (
+            <div key={id}>
+              <h4>{name}</h4>
+              <p>{email}</p>
+            </div>
+          ))}
+      </div>
     </>
   );
 };
@@ -42,5 +47,17 @@ const Home = async () => {
 
 //   return res.json();
 // }
+
+async function getAllUsers(): Promise<{ data: User[] }> {
+  const res = await fetch(
+    `${config.env.NEXT_PUBLIC_BASE_URL}${E_Routes.users}`,
+    {
+      // cache: 'no-store' //TODO
+      next: { revalidate: 60 } // TODO
+    }
+  );
+
+  return res.json();
+}
 
 export default Home;
