@@ -1,11 +1,10 @@
-import prisma from '@/prisma/client';
+import prisma from '@/utils/lib/prisma';
 import { E_MessageStatus, T_User } from '@/types';
 import { NextResponse } from 'next/server';
 import { StatusCodes } from 'http-status-codes';
-import { getPaginataionOptions } from '@/utils/helpers';
+import { getPaginataionOptions } from '@/utils';
 import { E_Role } from '@prisma/client';
 import { hash } from 'bcrypt';
-import { userSchema } from '@/utils/validation';
 
 interface I_Body {
   name: string;

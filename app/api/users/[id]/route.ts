@@ -1,4 +1,4 @@
-import prisma from '@/prisma/client';
+import prisma from '@/utils/lib/prisma';
 import { E_MessageStatus } from '@/types';
 import { NextResponse } from 'next/server';
 
