@@ -1,8 +1,7 @@
 import * as zod from 'zod';
 import { fieldsOptions } from './fieldOptions';
 
-export const userSchema = zod.object({
-  name: fieldsOptions.name,
+export const loginShema = zod.object({
   email: fieldsOptions.email,
   password: fieldsOptions.password
 });
