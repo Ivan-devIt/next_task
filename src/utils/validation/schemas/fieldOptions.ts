@@ -1,3 +1,4 @@
+import { E_Role } from '@prisma/client';
 import * as zod from 'zod';
 
 export const fieldsOptions = {
@@ -19,5 +20,6 @@ export const fieldsOptions = {
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_=+\\\|\[\]{};:'",.<>/?]).{8,20}$/,
       'The password must contain at least one lowercase and uppercase letter, number and special character, minimum 8 and maximum 20 characters'
-    )
+    ),
+  role: zod.nativeEnum(E_Role).default(E_Role.CUSTOMER)
 };

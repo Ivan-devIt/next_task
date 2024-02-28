@@ -10,6 +10,7 @@ interface I_Body {
   name: string;
   email: string;
   password: string;
+  role?: E_Role;
 }
 
 export class UserService {
@@ -60,15 +61,11 @@ export class UserService {
   //create new user
   async createUser(req: Request, reqBody?: I_Body) {
     try {
-      console.log('createUser===============', reqBody);
-
-      // const body = await req.json();
-
       const body = !!reqBody ? reqBody : await req.json();
 
-      console.log('createUser=====body==========', body);
+      const { email, name, password, role }: I_Body = body;
 
-      const { email, name, password }: I_Body = body;
+      console.log('role===', role);
 
       const isExistEmail = await this.checkIsUserWithEmailExist(email);
 
@@ -96,11 +93,16 @@ export class UserService {
         );
       }
 
-      const hashedPassword = await hash(password, 10);
+      const hashedPassword = await hash(password.trim(), 10);
 
       const createdUser = await prisma.user.create({
-        // TODO need coding password and think about role
-        data: { email, name, password: hashedPassword, role: E_Role.CUSTOMER }
+        // TODO  think about role
+        data: {
+          email: email.toLowerCase().trim(),
+          name: name.toLowerCase().trim(),
+          password: hashedPassword,
+          role: !!role ? role : E_Role.CUSTOMER
+        }
       });
 
       const { password: newHashedPassword, ...rest } = createdUser;

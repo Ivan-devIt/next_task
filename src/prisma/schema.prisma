@@ -32,5 +32,4 @@ enum E_Role {
   CUSTOMER
   MANAGER
   ADMIN
-  SUPER_ADMIN
 }

@@ -1,39 +1,11 @@
 'use client';
-
-import { loginShema } from '@/utils/validation/schemas';
-import { useState } from 'react';
-import { ZodError } from 'zod';
 import { Button, FormInner, FormInput, FormLabel, Typography } from '../Ui';
 import { E_ButtonType, E_ButtonVariant, E_TagVariant } from '@/types';
+import { useSignInForm } from '@/hooks';
+import { signIn } from 'next-auth/react';
 
 export const LoginForm = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-      // Validate form data using the form schema
-      loginShema.parse(formData);
-      // Form data is valid, submit the form
-      console.log('Form data is valid:', formData);
-    } catch (error) {
-      // Form data is invalid, set errors
-      if (error instanceof ZodError) {
-        const fieldErrors: { [key: string]: string } = {};
-        error.errors.forEach(err => {
-          const fieldName = err.path.join('.');
-          fieldErrors[fieldName] = err.message;
-        });
-        setErrors(fieldErrors);
-      }
-    }
-  };
+  const { handleSubmit, formData, handleChange, errors } = useSignInForm();
 
   return (
     <form
@@ -67,7 +39,7 @@ export const LoginForm = () => {
           errors={errors}
         />
       </FormInner>
-      <div className="flex justify-between gap-5">
+      <div className="flex justify-between gap-5 mt-5">
         <Button
           type={E_ButtonType.button}
           text={'Go home'}

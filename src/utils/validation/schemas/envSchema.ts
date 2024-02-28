@@ -8,6 +8,14 @@ export const envSchema = zod.object({
     .string()
     .min(1, 'DATABASE_URL env is requared!')
     .url('DATABASE_URL env Invalid URL'),
+  NEXTAUTH_SECRET: zod
+    .string()
+    .min(1, 'NEXTAUTH_SECRET env is requared!')
+    .max(100, 'NEXTAUTH_SECRET max lenhth is 100 symbols'),
+  NEXTAUTH_URL: zod
+    .string()
+    .min(1, 'NEXTAUTH_URL env is requared!')
+    .url('NEXTAUTH_URL env Invalid URL'),
   NEXT_PUBLIC_BASE_URL: zod
     .string()
     .min(1, 'NEXT_PUBLIC_BASE_URL env is requared!')

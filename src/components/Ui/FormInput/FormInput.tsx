@@ -20,7 +20,7 @@ export const FormInput = ({
   className = ''
 }: I_FormInputProps) => {
   const defaultClasses =
-    'py-2 px-3 shadow-lg outline-none border-none  rounded text-base placeholder-sm';
+    'py-2 px-3 box-shadow-sm outline-none border-none  rounded text-base placeholder-sm focus-element';
   const preparedClasses = `${defaultClasses} ${className.trim()}`.trim();
 
   return (
@@ -34,7 +34,9 @@ export const FormInput = ({
         onChange={onChange}
         className={preparedClasses}
       />
-      {errors[name] && <span>{errors[name]}</span>}
+      {errors[name] && (
+        <span className={'mt-1 text-xs text-red-500'}>{errors[name]}</span>
+      )}
     </>
   );
 };

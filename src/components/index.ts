@@ -1,4 +1,4 @@
-export * from './Providers';
 export { NavBar } from './NavBar';
 export { Logo } from './Logo';
-export { LoginForm } from './LoginForm';
+export { LoginForm } from './Form';
+export * from './Providers';

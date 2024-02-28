@@ -1,4 +1,4 @@
-import { NavBar } from '@/components';
+import { NavBar, SessionProvider } from '@/components';
 import { Roboto } from 'next/font/google';
 import './global.css';
 
@@ -22,9 +22,11 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <link rel="icon" type="image/x-icon" href="/icons/mail3.svg" />
       </head>
       <body className={`${roboto.className} bg-slate-200`}>
-        <NavBar />
-        <main className={'p-5'}>{children}</main>
-        {/* <Footer /> */}
+        <SessionProvider>
+          <NavBar />
+          <main className={'p-5'}>{children}</main>
+          {/* <Footer /> */}
+        </SessionProvider>
       </body>
     </html>
   );

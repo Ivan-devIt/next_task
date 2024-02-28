@@ -1,28 +1,30 @@
 import { E_ButtonType, E_ButtonVariant } from '@/types';
+import { FC } from 'react';
 
 interface I_ButtonProps {
   type: E_ButtonType;
   text: string;
   variant: E_ButtonVariant;
-  className: string;
+  className?: string;
 }
 
-export const Button = ({
+export const Button: FC<I_ButtonProps> = ({
   type = E_ButtonType.button,
   text,
-  className = ''
-}: I_ButtonProps) => {
+  className = '',
+  variant
+}) => {
   const typeClasses = (() => {
-    switch (type) {
-      case E_ButtonType.submit:
-        return 'bg-indigo-700 hover:bg-indigo-600 text-slate-50 hover:text-slate-100';
+    switch (variant) {
+      case E_ButtonVariant.submit:
+        return 'bg-indigo-700 text-slate-50 hover:bg-indigo-600 hover:text-slate-100';
 
       default:
-        return '';
+        return 'bg-slate-200 text-indigo-900 hover:bg-slate-300 hover:text-indigo-800';
     }
   })();
 
-  const defaultClasse = `flex items-center justify-center w-full py-1 px-2 font-semibold bg-slate-200 text-indigo-900 rounded text-base transition-colors duration-300 shadow-lg hover:bg-slate-400 hover:cursor-pointer hover:text-indigo-800`;
+  const defaultClasse = `flex items-center justify-center w-full py-1 px-2 font-semibold box-shadow-sm rounded text-base transition-colors duration-300 hover:cursor-pointer hover:box-shadow-xl focus-element`;
   const preparedClasses =
     `${defaultClasse} ${typeClasses} ${className.trim()}`.trim();
 

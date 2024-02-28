@@ -25,3 +25,19 @@ body {
 .letter-shadow {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Adjust shadow properties as needed */
 }
+
+.box-shadow-sm {
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.box-shadow-lg {
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.box-shadow-xl {
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 1);
+}
+
+.focus-element {
+  @apply focus:outline-none focus:ring focus:ring-violet-600;
+}
