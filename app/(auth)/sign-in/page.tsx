@@ -1,11 +1,12 @@
-// import SignInForm from '@/components/form/SignInForm';
-
 import { LoginForm } from '@/components';
+import { Suspense } from 'react';
 
 const page = () => {
   return (
     <div className="w-full">
-      <LoginForm />
+      <Suspense>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 };

@@ -2,7 +2,6 @@
 import { Button, FormInner, FormInput, FormLabel, Typography } from '../Ui';
 import { E_ButtonType, E_ButtonVariant, E_TagVariant } from '@/types';
 import { useSignInForm } from '@/hooks';
-import { signIn } from 'next-auth/react';
 
 export const LoginForm = () => {
   const { handleSubmit, formData, handleChange, errors } = useSignInForm();
