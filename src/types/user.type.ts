@@ -1,6 +1,6 @@
-import { E_Role, User } from '@prisma/client';
-import { I_ResponseMessage } from '.';
-import { NextResponse } from 'next/server';
+import type { E_Role, User } from '@prisma/client';
+import type { I_ResponseMessage } from '.';
+import type { NextResponse } from 'next/server';
 
 export type T_User = User;
 
@@ -20,7 +20,7 @@ export interface I_UserBody {
   role?: E_Role;
 }
 
-export interface I_UpdateUserBody {
+export interface I_UserBodyFields {
   name?: string;
   email?: string;
   password?: string;

@@ -2,7 +2,7 @@ import prisma from '@/utils/lib/prisma';
 import {
   E_MessageStatus,
   I_Pagination,
-  I_UpdateUserBody,
+  I_UserBodyFields,
   I_UserBody,
   T_User,
   T_UserPublic,
@@ -93,12 +93,14 @@ class UserService {
       const { email, name, password, role }: I_UserBody = body;
 
       const isExistEmail = await this.checkIsUserWithEmailExist(email);
+      console.log('isExistEmail==', isExistEmail);
 
       if (isExistEmail) {
         return conflictResponse(`User with email:${email} is already exist`);
       }
 
       const isExistName = await this.checkIsUserWithNameExist(name);
+      console.log('isExistName==', isExistName);
 
       if (isExistName) {
         return conflictResponse(`User with name:${name} is already exist`);
@@ -128,14 +130,22 @@ class UserService {
     body
   }: {
     id: string | number;
-    body: I_UpdateUserBody;
+    body: I_UserBodyFields;
   }): Promise<T_UserResponse> {
     try {
       if (isNaN(Number(id))) {
         return badRequestResponse('Not valid user id');
       }
 
+      const currentUser = await this.getUserByUserId(id);
+
+      if (currentUser.status !== StatusCodes.OK) {
+        //if not found user return error response
+        return currentUser;
+      }
+
       const { email, name, password, role } = body;
+      let newUserData = {};
 
       // Checking if the email is available
       if (!!email) {
@@ -144,6 +154,8 @@ class UserService {
         if (existEmail) {
           return conflictResponse(`Email:${email} was already taken`);
         }
+
+        newUserData = { ...newUserData, email };
       }
 
       // Checking if the name is available
@@ -153,7 +165,26 @@ class UserService {
         if (existName) {
           return conflictResponse(`Name:${name} was already taken`);
         }
+
+        newUserData = { ...newUserData, name };
       }
+
+      if (!!password) {
+        const hashedPassword = await hash(password.trim(), 10);
+
+        newUserData = { ...newUserData, password: hashedPassword };
+      }
+
+      if (!!role) {
+        newUserData = { ...newUserData, role };
+      }
+
+      const updatedUser = await prisma.user.update({
+        where: { id: Number(id) },
+        data: { ...newUserData }
+      });
+
+      return successResponse(this.preparedPublicUser(updatedUser));
     } catch (error) {
       return serverErrorResponse(error);
     }
@@ -162,7 +193,7 @@ class UserService {
   //delete user by user id
   public async deleteUserByUserId(
     id: string | number
-  ): Promise<T_UserResponse> {
+  ): Promise<T_UserResponse<T_User | T_UserPublic>> {
     try {
       const userResponse = await this.getUserByUserId(id);
 
@@ -184,7 +215,7 @@ class UserService {
   private async findUserByEmail(email: string): Promise<T_UserResponse> {
     try {
       const user: T_User | null = await prisma.user.findUnique({
-        where: { email }
+        where: { email: email.toLowerCase() }
       });
 
       if (!user) {
@@ -201,7 +232,7 @@ class UserService {
   private async findUserByName(name: string): Promise<T_UserResponse> {
     try {
       const user: T_User | null = await prisma.user.findUnique({
-        where: { name }
+        where: { name: name.toLowerCase() }
       });
 
       if (!user) {
@@ -216,12 +247,14 @@ class UserService {
 
   //check is user with email already exist in db
   private async checkIsUserWithEmailExist(email: string): Promise<boolean> {
-    return !!(await (await this.findUserByEmail(email)).json()).data;
+    const user = await (await this.findUserByEmail(email)).json();
+    return !!user.data;
   }
 
   //check is user with name already exist in db
   private async checkIsUserWithNameExist(name: string): Promise<boolean> {
-    return !!(await (await this.findUserByName(name)).json()).data;
+    const user = await (await this.findUserByName(name)).json();
+    return !!user.data;
   }
 
   //prepare public user data whithout password

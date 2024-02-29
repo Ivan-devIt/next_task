@@ -6,5 +6,6 @@ export enum E_MessageStatus {
   created = 'Created',
   notFound = 'Not found',
   connflict = 'Conflict',
-  badRequest = 'Bad request'
+  badRequest = 'Bad request',
+  notEmptyBody = 'The body should not be empty'
 }

@@ -2,7 +2,7 @@ export type { I_ResponseMessage } from './response.message.interface';
 export type {
   T_User,
   T_UserPublic,
-  I_UpdateUserBody,
+  I_UserBodyFields,
   I_UserBody,
   T_UserResponse
 } from './user.type';

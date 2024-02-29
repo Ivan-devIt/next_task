@@ -2,8 +2,8 @@ import { StatusCodes } from 'http-status-codes';
 import { NextResponse } from 'next/server';
 import * as zod from 'zod';
 
+//FIX remove this after
 export const validateBodyMiddleware = async <T>(
-  // req: NextApiRequest,
   req: Request,
   schema: zod.ZodSchema<T>,
   next: (body: T) => Promise<NextResponse<unknown>>
@@ -11,7 +11,6 @@ export const validateBodyMiddleware = async <T>(
   try {
     const reqBody = await req.json();
     const validatedData = schema.parse(reqBody);
-    console.log('==validatedData==', validatedData);
 
     return await next(validatedData);
   } catch (error) {
