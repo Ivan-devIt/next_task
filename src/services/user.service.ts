@@ -1,34 +1,34 @@
 import prisma from '@/utils/lib/prisma';
-import { E_MessageStatus, I_ResponseMessage, T_User } from '@/types';
-import { NextResponse } from 'next/server';
+import {
+  E_MessageStatus,
+  I_Pagination,
+  I_UpdateUserBody,
+  I_UserBody,
+  T_User,
+  T_UserPublic,
+  T_UserResponse
+} from '@/types';
 import { StatusCodes } from 'http-status-codes';
-import { getPaginataionOptions, responseMessage } from '@/utils';
+import {
+  badRequestResponse,
+  conflictResponse,
+  createResponse,
+  getPaginataionOptions,
+  notFoundResponse,
+  serverErrorResponse,
+  successResponse
+} from '@/utils';
 import { E_Role } from '@prisma/client';
 import { hash } from 'bcrypt';
-
-interface I_Body {
-  name: string;
-  email: string;
-  password: string;
-  role?: E_Role;
-}
-
-// type CustomResponsePromise<T> = Promise<NextResponse<I_ResponseMessage<T>>>; //TODO
 
 class UserService {
   constructor() {}
 
   //get user by id
-  public async getUserByUserId(
-    id: string | number
-  ): Promise<NextResponse<I_ResponseMessage<T_User | null>>> {
+  public async getUserByUserId(id: string | number): Promise<T_UserResponse> {
     try {
       if (isNaN(Number(id))) {
-        //if not valid user id
-        return responseMessage({
-          status: StatusCodes.BAD_REQUEST,
-          message: 'Not valid user id'
-        });
+        return badRequestResponse('Not valid user id');
       }
 
       const user: T_User | null = await prisma.user.findUnique({
@@ -36,36 +36,35 @@ class UserService {
       });
 
       if (!user) {
-        return await this.notFoundUserResponse(id);
+        return notFoundResponse();
       }
 
-      return responseMessage({ data: user });
-    } catch (error: any) {
-      return responseMessage({
-        status: StatusCodes.INTERNAL_SERVER_ERROR,
-        message: !!error?.message ? error?.message : E_MessageStatus.error
-      });
+      return successResponse(this.preparedPublicUser(user));
+    } catch (error) {
+      return serverErrorResponse(error);
     }
   }
 
-  //get all users with pagination
-  public async getUsers(req: Request) {
+  //get all users with pagination I_Pagination
+  public async getUsers(req: Request): Promise<
+    T_UserResponse<{
+      pagination: I_Pagination;
+      users: T_UserPublic[];
+    }>
+  > {
     try {
       const { searchParams } = new URL(req.url!);
 
       const count = await prisma.user.count();
 
-      const pagination = await getPaginataionOptions({ searchParams, count });
+      const pagination: I_Pagination = getPaginataionOptions({
+        searchParams,
+        count
+      });
 
-      if (!count)
-        return NextResponse.json(
-          {
-            status: StatusCodes.NOT_FOUND,
-            pagination,
-            data: []
-          },
-          { status: StatusCodes.NOT_FOUND }
-        );
+      if (!count) {
+        return notFoundResponse();
+      }
 
       const users = await prisma.user.findMany({
         where: {},
@@ -73,54 +72,36 @@ class UserService {
         skip: (pagination.page - 1) * pagination.skip
       });
 
-      return NextResponse.json({
-        status: StatusCodes.OK,
-        pagination,
-        data: users
-      });
-    } catch (error: any) {
-      return NextResponse.json(
-        {
-          status: StatusCodes.INTERNAL_SERVER_ERROR,
-          message: !!error?.message ? error?.message : E_MessageStatus.error,
-          data: null
-        },
-        { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      const publicUser: T_UserPublic[] = users.map(user =>
+        this.preparedPublicUser(user)
       );
+
+      return successResponse({ pagination, users: publicUser });
+    } catch (error) {
+      return serverErrorResponse(error);
     }
   }
 
   //create new user
-  public async createUser(req: Request, reqBody?: I_Body) {
+  public async createUser(
+    req: Request,
+    reqBody?: I_UserBody
+  ): Promise<T_UserResponse> {
     try {
       const body = !!reqBody ? reqBody : await req.json();
 
-      const { email, name, password, role }: I_Body = body;
+      const { email, name, password, role }: I_UserBody = body;
 
       const isExistEmail = await this.checkIsUserWithEmailExist(email);
 
       if (isExistEmail) {
-        return NextResponse.json(
-          {
-            status: StatusCodes.CONFLICT,
-            data: null,
-            message: `User with email:${email} is already exist`
-          },
-          { status: StatusCodes.CONFLICT }
-        );
+        return conflictResponse(`User with email:${email} is already exist`);
       }
 
       const isExistName = await this.checkIsUserWithNameExist(name);
 
       if (isExistName) {
-        return NextResponse.json(
-          {
-            status: StatusCodes.CONFLICT,
-            data: null,
-            message: `User with name:${name} is already exist`
-          },
-          { status: StatusCodes.CONFLICT }
-        );
+        return conflictResponse(`User with name:${name} is already exist`);
       }
 
       const hashedPassword = await hash(password.trim(), 10);
@@ -135,31 +116,53 @@ class UserService {
         }
       });
 
-      // eslint-disable-next-line
-      const { password: newHashedPassword, ...rest } = createdUser;
+      return createResponse(this.preparedPublicUser(createdUser));
+    } catch (error) {
+      return serverErrorResponse(error);
+    }
+  }
 
-      return NextResponse.json(
-        { status: 201, data: rest, message: E_MessageStatus.created },
-        { status: StatusCodes.CREATED }
-      );
-    } catch (error: any) {
-      return NextResponse.json(
-        {
-          status: StatusCodes.INTERNAL_SERVER_ERROR,
-          message: !!error?.message
-            ? String(error?.message)
-            : E_MessageStatus.error,
-          data: null
-        },
-        { status: StatusCodes.INTERNAL_SERVER_ERROR }
-      );
+  // update user by user id
+  public async updateUser({
+    id,
+    body
+  }: {
+    id: string | number;
+    body: I_UpdateUserBody;
+  }): Promise<T_UserResponse> {
+    try {
+      if (isNaN(Number(id))) {
+        return badRequestResponse('Not valid user id');
+      }
+
+      const { email, name, password, role } = body;
+
+      // Checking if the email is available
+      if (!!email) {
+        const existEmail = await this.checkIsUserWithEmailExist(email);
+
+        if (existEmail) {
+          return conflictResponse(`Email:${email} was already taken`);
+        }
+      }
+
+      // Checking if the name is available
+      if (!!name) {
+        const existName = await this.checkIsUserWithNameExist(name);
+
+        if (existName) {
+          return conflictResponse(`Name:${name} was already taken`);
+        }
+      }
+    } catch (error) {
+      return serverErrorResponse(error);
     }
   }
 
   //delete user by user id
   public async deleteUserByUserId(
     id: string | number
-  ): Promise<NextResponse<I_ResponseMessage<T_User | null>>> {
+  ): Promise<T_UserResponse> {
     try {
       const userResponse = await this.getUserByUserId(id);
 
@@ -171,65 +174,43 @@ class UserService {
         where: { id: Number(id) }
       });
 
-      return responseMessage({
-        status: StatusCodes.OK,
-        data: deletedUser
-      });
-    } catch (error: any) {
-      return responseMessage({
-        status: StatusCodes.INTERNAL_SERVER_ERROR,
-        message: !!error?.message ? error?.message : E_MessageStatus.error
-      });
+      return successResponse(deletedUser, E_MessageStatus.deleted);
+    } catch (error) {
+      return serverErrorResponse(error);
     }
   }
 
   //find user by email in db
-  private async findUserByEmail(
-    email: string
-  ): Promise<NextResponse<I_ResponseMessage<T_User | null>>> {
+  private async findUserByEmail(email: string): Promise<T_UserResponse> {
     try {
       const user: T_User | null = await prisma.user.findUnique({
         where: { email }
       });
 
       if (!user) {
-        return responseMessage({
-          status: StatusCodes.NOT_FOUND,
-          message: `User with email:"${email}" is not found!`
-        });
+        return notFoundResponse(`User with email:"${email}" is not found!`);
       }
 
-      return responseMessage({ data: user });
-    } catch (error: any) {
-      return responseMessage({
-        status: StatusCodes.INTERNAL_SERVER_ERROR,
-        message: !!error?.message ? error?.message : E_MessageStatus.error
-      });
+      return successResponse(this.preparedPublicUser(user));
+    } catch (error) {
+      return serverErrorResponse(error);
     }
   }
 
   //find user by email in db
-  private async findUserByName(
-    name: string
-  ): Promise<NextResponse<I_ResponseMessage<T_User | null>>> {
+  private async findUserByName(name: string): Promise<T_UserResponse> {
     try {
       const user: T_User | null = await prisma.user.findUnique({
         where: { name }
       });
 
       if (!user) {
-        return responseMessage({
-          status: StatusCodes.NOT_FOUND,
-          message: `User with name:"${name}" is not found!`
-        });
+        return notFoundResponse(`User with name:"${name}" is not found!`);
       }
 
-      return responseMessage({ data: user });
-    } catch (error: any) {
-      return responseMessage({
-        status: StatusCodes.INTERNAL_SERVER_ERROR,
-        message: !!error?.message ? error?.message : E_MessageStatus.error
-      });
+      return successResponse(this.preparedPublicUser(user));
+    } catch (error) {
+      return serverErrorResponse(error);
     }
   }
 
@@ -243,14 +224,12 @@ class UserService {
     return !!(await (await this.findUserByName(name)).json()).data;
   }
 
-  //not found user response
-  private async notFoundUserResponse(
-    id: string | number
-  ): Promise<NextResponse<I_ResponseMessage<null>>> {
-    return responseMessage({
-      status: StatusCodes.NOT_FOUND,
-      message: `User with id:${id} is not found!`
-    });
+  //prepare public user data whithout password
+  private preparedPublicUser(user: T_User): T_UserPublic {
+    // eslint-disable-next-line
+    const { password: newHashedPassword, ...publicUserData } = user;
+
+    return publicUserData;
   }
 }
 

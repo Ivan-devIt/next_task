@@ -1,7 +1,10 @@
 export enum E_MessageStatus {
-  success = 'success',
-  error = 'error',
-  deleted = 'deleted',
-  updated = 'updated',
-  created = 'created'
+  success = 'Success',
+  error = 'Error',
+  deleted = 'Deleted',
+  updated = 'Updated',
+  created = 'Created',
+  notFound = 'Not found',
+  connflict = 'Conflict',
+  badRequest = 'Bad request'
 }
