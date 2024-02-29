@@ -1,6 +1,7 @@
 import { NavBar, SessionProvider } from '@/components';
 import { Roboto } from 'next/font/google';
 import './global.css';
+import { Toaster } from 'react-hot-toast';
 
 // export const metadata = { //TODO think how do dis part correct
 // 	// title: 'Flexibble',
@@ -22,6 +23,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <link rel="icon" type="image/x-icon" href="/icons/mail3.svg" />
       </head>
       <body className={`${roboto.className} bg-slate-200`}>
+        <Toaster position="top-center" />
         <SessionProvider>
           <NavBar />
           <main className={'p-5'}>{children}</main>

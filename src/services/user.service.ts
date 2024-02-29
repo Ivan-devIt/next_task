@@ -1,8 +1,8 @@
 import prisma from '@/utils/lib/prisma';
-import { E_MessageStatus, T_User } from '@/types';
+import { E_MessageStatus, I_ResponseMessage, T_User } from '@/types';
 import { NextResponse } from 'next/server';
 import { StatusCodes } from 'http-status-codes';
-import { getPaginataionOptions } from '@/utils';
+import { getPaginataionOptions, responseMessage } from '@/utils';
 import { E_Role } from '@prisma/client';
 import { hash } from 'bcrypt';
 
@@ -13,11 +13,43 @@ interface I_Body {
   role?: E_Role;
 }
 
-export class UserService {
+// type CustomResponsePromise<T> = Promise<NextResponse<I_ResponseMessage<T>>>; //TODO
+
+class UserService {
   constructor() {}
 
+  //get user by id
+  public async getUserByUserId(
+    id: string | number
+  ): Promise<NextResponse<I_ResponseMessage<T_User | null>>> {
+    try {
+      if (isNaN(Number(id))) {
+        //if not valid user id
+        return responseMessage({
+          status: StatusCodes.BAD_REQUEST,
+          message: 'Not valid user id'
+        });
+      }
+
+      const user: T_User | null = await prisma.user.findUnique({
+        where: { id: Number(id) }
+      });
+
+      if (!user) {
+        return await this.notFoundUserResponse(id);
+      }
+
+      return responseMessage({ data: user });
+    } catch (error: any) {
+      return responseMessage({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: !!error?.message ? error?.message : E_MessageStatus.error
+      });
+    }
+  }
+
   //get all users with pagination
-  async getUsers(req: Request) {
+  public async getUsers(req: Request) {
     try {
       const { searchParams } = new URL(req.url!);
 
@@ -59,13 +91,11 @@ export class UserService {
   }
 
   //create new user
-  async createUser(req: Request, reqBody?: I_Body) {
+  public async createUser(req: Request, reqBody?: I_Body) {
     try {
       const body = !!reqBody ? reqBody : await req.json();
 
       const { email, name, password, role }: I_Body = body;
-
-      console.log('role===', role);
 
       const isExistEmail = await this.checkIsUserWithEmailExist(email);
 
@@ -105,6 +135,7 @@ export class UserService {
         }
       });
 
+      // eslint-disable-next-line
       const { password: newHashedPassword, ...rest } = createdUser;
 
       return NextResponse.json(
@@ -112,8 +143,6 @@ export class UserService {
         { status: StatusCodes.CREATED }
       );
     } catch (error: any) {
-      // console.log('====error====', JSON.stringify(error, null, 2));
-
       return NextResponse.json(
         {
           status: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -127,85 +156,102 @@ export class UserService {
     }
   }
 
-  //find user by email in db
-  async findUserByEmail(email: string): Promise<
-    NextResponse<{
-      status: number;
-      message: string;
-      data: null | T_User;
-    }>
-  > {
+  //delete user by user id
+  public async deleteUserByUserId(
+    id: string | number
+  ): Promise<NextResponse<I_ResponseMessage<T_User | null>>> {
     try {
-      const user = await prisma.user.findUnique({ where: { email } });
+      const userResponse = await this.getUserByUserId(id);
 
-      if (!user) {
-        return NextResponse.json({
-          status: StatusCodes.NOT_FOUND,
-          message: `User with email:"${email}" is not found!`,
-          data: null
-        });
+      if (userResponse.status !== StatusCodes.OK) {
+        return userResponse;
       }
 
-      return NextResponse.json({
+      const deletedUser = await prisma.user.delete({
+        where: { id: Number(id) }
+      });
+
+      return responseMessage({
         status: StatusCodes.OK,
-        message: E_MessageStatus.success,
-        data: user
+        data: deletedUser
       });
     } catch (error: any) {
-      return NextResponse.json(
-        {
-          status: StatusCodes.INTERNAL_SERVER_ERROR,
-          message: !!error?.message ? error?.message : E_MessageStatus.error,
-          data: null
-        },
-        { status: StatusCodes.INTERNAL_SERVER_ERROR }
-      );
+      return responseMessage({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: !!error?.message ? error?.message : E_MessageStatus.error
+      });
     }
   }
 
   //find user by email in db
-  async findUserByName(name: string): Promise<
-    NextResponse<{
-      status: number;
-      message: string;
-      data: null | T_User;
-    }>
-  > {
+  private async findUserByEmail(
+    email: string
+  ): Promise<NextResponse<I_ResponseMessage<T_User | null>>> {
     try {
-      const user = await prisma.user.findUnique({ where: { name } });
+      const user: T_User | null = await prisma.user.findUnique({
+        where: { email }
+      });
 
       if (!user) {
-        return NextResponse.json({
+        return responseMessage({
           status: StatusCodes.NOT_FOUND,
-          message: `User with name:"${name}" is not found!`,
-          data: null
+          message: `User with email:"${email}" is not found!`
         });
       }
 
-      return NextResponse.json({
-        status: StatusCodes.OK,
-        message: E_MessageStatus.success,
-        data: user
-      });
+      return responseMessage({ data: user });
     } catch (error: any) {
-      return NextResponse.json(
-        {
-          status: StatusCodes.INTERNAL_SERVER_ERROR,
-          message: !!error?.message ? error?.message : E_MessageStatus.error,
-          data: null
-        },
-        { status: StatusCodes.INTERNAL_SERVER_ERROR }
-      );
+      return responseMessage({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: !!error?.message ? error?.message : E_MessageStatus.error
+      });
+    }
+  }
+
+  //find user by email in db
+  private async findUserByName(
+    name: string
+  ): Promise<NextResponse<I_ResponseMessage<T_User | null>>> {
+    try {
+      const user: T_User | null = await prisma.user.findUnique({
+        where: { name }
+      });
+
+      if (!user) {
+        return responseMessage({
+          status: StatusCodes.NOT_FOUND,
+          message: `User with name:"${name}" is not found!`
+        });
+      }
+
+      return responseMessage({ data: user });
+    } catch (error: any) {
+      return responseMessage({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: !!error?.message ? error?.message : E_MessageStatus.error
+      });
     }
   }
 
   //check is user with email already exist in db
-  async checkIsUserWithEmailExist(email: string): Promise<boolean> {
+  private async checkIsUserWithEmailExist(email: string): Promise<boolean> {
     return !!(await (await this.findUserByEmail(email)).json()).data;
   }
 
   //check is user with name already exist in db
-  async checkIsUserWithNameExist(name: string): Promise<boolean> {
+  private async checkIsUserWithNameExist(name: string): Promise<boolean> {
     return !!(await (await this.findUserByName(name)).json()).data;
   }
+
+  //not found user response
+  private async notFoundUserResponse(
+    id: string | number
+  ): Promise<NextResponse<I_ResponseMessage<null>>> {
+    return responseMessage({
+      status: StatusCodes.NOT_FOUND,
+      message: `User with id:${id} is not found!`
+    });
+  }
 }
+
+export const userService = new UserService();

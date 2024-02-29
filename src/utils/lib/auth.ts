@@ -10,8 +10,6 @@ export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   pages: {
     signIn: E_Routes.signIn
-    // error: E_Routes.signIn
-    // signOut: '/auth/signout'
   },
   secret: String(process.env.NEXTAUTH_SECRET),
 
@@ -39,13 +37,15 @@ export const authOptions: AuthOptions = {
           });
 
           if (!existingUser) {
-            throw new Error(`Invalid email`);
+            throw new Error(
+              `Not find user with this email. Please enter correct email!`
+            );
           }
 
           const passwordMatch = await compare(password, existingUser.password);
 
           if (!passwordMatch) {
-            throw new Error(`Invalid password`);
+            throw new Error(`Wrong password. Please enter correct password!`);
           }
 
           const user = {
@@ -64,9 +64,6 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // console.log('==JWT==token==', token);
-      // console.log('==JWT==user==', user);
-
       if (user) {
         return {
           ...token,
@@ -78,9 +75,6 @@ export const authOptions: AuthOptions = {
     },
 
     async session({ session, token }) {
-      // console.log('==session==session==', session);
-      // console.log('==session==token==', token);
-
       return {
         ...session,
         user: {

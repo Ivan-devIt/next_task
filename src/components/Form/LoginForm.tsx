@@ -8,6 +8,7 @@ export const LoginForm = () => {
 
   return (
     <form
+      noValidate={true}
       className="mx-auto flex flex-col gap-3 text-xl w-96 rounded shadow-2xl p-5 bg-slate-50"
       onSubmit={handleSubmit}
     >

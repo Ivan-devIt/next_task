@@ -6,6 +6,7 @@ import { signIn } from 'next-auth/react';
 import { E_Routes } from '@/types/routes.enum';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { E_SearchParam } from '@/types/search.params.enum';
+import toast from 'react-hot-toast';
 
 interface I_User {
   email: string;
@@ -60,7 +61,12 @@ export const useSignInForm = () => {
     console.log('===signInData==', signInData);
 
     if (!!signInData && !signInData.error) {
+      router.refresh();
       router.push(!!callbackUrl ? `/${callbackUrl}` : E_Routes.dashboard);
+    }
+
+    if (!!signInData && !!signInData.error) {
+      toast.error(signInData.error);
     }
   };
 
