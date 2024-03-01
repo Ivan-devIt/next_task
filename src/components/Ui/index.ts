@@ -3,3 +3,4 @@ export { FormInput } from './FormInput';
 export { Button } from './Button';
 export { FormInner } from './FormInner';
 export { Typography } from './Typography';
+export { HideSvg, ShowSvg } from './Svg';

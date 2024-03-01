@@ -17,7 +17,8 @@ model User {
   name             String @unique
   email            String @unique
   password         String
-  role             E_Role  
+  role             E_Role
+  // avatar           String @default("")//TODO  
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt 
 }
