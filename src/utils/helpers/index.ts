@@ -6,5 +6,6 @@ export {
   createResponse,
   badRequestResponse,
   conflictResponse,
-  serverErrorResponse
+  serverErrorResponse,
+  forbiddenResponse
 } from './response.messages';

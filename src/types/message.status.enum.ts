@@ -7,5 +7,6 @@ export enum E_MessageStatus {
   notFound = 'Not found',
   connflict = 'Conflict',
   badRequest = 'Bad request',
-  notEmptyBody = 'The body should not be empty'
+  notEmptyBody = 'The body should not be empty',
+  forbidden = 'Forbidden'
 }

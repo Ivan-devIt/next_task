@@ -1,17 +1,14 @@
-// import { UsersList } from '@/components/UsersList/UsersList';
-import { I_Pagination, I_ResponseMessage, T_UserPublic } from '@/types';
-import { getSession } from 'next-auth/react';
-import { cookies } from 'next/headers';
+'use client';
 
-export default async function page() {
+import { I_Pagination, I_ResponseMessage, T_UserPublic } from '@/types';
+
+export const UsersList = async () => {
   const usersResponse = await getUsers({ skip: 30 });
 
   const { data } = usersResponse;
 
   return (
     <div>
-      <h1>Welcome to admin page</h1>
-      {/* <UsersList /> */}
       {!!data?.users && (
         <div>
           {data.users.map(({ name, email, role, id }) => (
@@ -26,7 +23,7 @@ export default async function page() {
       )}
     </div>
   );
-}
+};
 
 async function getUsers({
   page,
@@ -40,21 +37,20 @@ async function getUsers({
     users: T_UserPublic[];
   }>
 > {
-  const tokenSession = cookies().get('next-auth.session-token');
-
   const users = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/users?page=${page}&skip=${skip}`,
     {
       method: 'GET',
-      cache: 'no-cache', //TODO
-      headers: {
-        tokenSession: String(tokenSession?.value)
+      // cache: 'no-cache' //TODO
+      next: {
+        revalidate: 10 //sec
       }
-      // next: { //TODO
-      //   revalidate: 10 //sec
-      // }
     }
   );
+
+  if (!users.ok) {
+    throw new Error('ssssssssssss asdaddasdas sads');
+  }
 
   return users.json();
 }

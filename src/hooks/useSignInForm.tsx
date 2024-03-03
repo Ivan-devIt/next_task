@@ -58,10 +58,8 @@ export const useSignInForm = () => {
       redirect: false
     });
 
-    console.log('===signInData==', signInData);
-
     if (!!signInData && !signInData.error) {
-      router.refresh();
+      // router.refresh();
       router.push(!!callbackUrl ? `/${callbackUrl}` : E_Routes.dashboard);
     }
 
@@ -74,8 +72,6 @@ export const useSignInForm = () => {
     e.preventDefault();
 
     const isCheckSuccess = await handleValidateFields();
-
-    console.log('==isCheckSuccess==', isCheckSuccess);
 
     if (!!isCheckSuccess) {
       await handleSignIn(formData);

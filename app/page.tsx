@@ -1,4 +1,10 @@
-const Home = async () => {
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Home | News portal'
+};
+
+export default async function Home() {
   return (
     <>
       <div className="">
@@ -18,6 +24,4 @@ const Home = async () => {
       </div>
     </>
   );
-};
-
-export default Home;
+}

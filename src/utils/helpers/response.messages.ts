@@ -55,6 +55,14 @@ export const conflictResponse = <T>(message?: string, data?: T) =>
   });
 
 //server error response
+export const forbiddenResponse = <T>(message?: string, data?: T) =>
+  responseMessage({
+    status: StatusCodes.FORBIDDEN,
+    message: !!message ? message : E_MessageStatus.forbidden,
+    data
+  });
+
+//server error response
 export const serverErrorResponse = <T>(error: any, data?: T) =>
   responseMessage({
     status: !!error?.status ? error.status : StatusCodes.INTERNAL_SERVER_ERROR,

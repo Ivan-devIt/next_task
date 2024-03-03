@@ -51,7 +51,11 @@ export const FormInput = ({
             className="absolute right-2 top-1/2 -translate-y-1/2 hover:cursor-pointer"
             onClick={handleTogleShowPassword}
           >
-            {show ? <HideSvg /> : <ShowSvg />}
+            {show ? (
+              <HideSvg className={'text-gray-400'} />
+            ) : (
+              <ShowSvg className={'text-gray-400'} />
+            )}
           </span>
         )}
       </div>

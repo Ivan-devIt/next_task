@@ -2,6 +2,7 @@ import { NavBar, SessionProvider } from '@/components';
 import { Roboto } from 'next/font/google';
 import './global.css';
 import { Toaster } from 'react-hot-toast';
+import { Metadata } from 'next';
 
 // export const metadata = { //TODO think how do dis part correct
 // 	// title: 'Flexibble',
@@ -15,11 +16,14 @@ const roboto = Roboto({
   display: 'swap'
 });
 
+export const metadata: Metadata = {
+  title: 'News portal | Next'
+};
+
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <head>
-        <title>News portal | Next</title>
         <link rel="icon" type="image/x-icon" href="/icons/mail3.svg" />
       </head>
       <body className={`${roboto.className} bg-slate-200`}>
