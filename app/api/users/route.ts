@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
   const token = await getToken({ req });
 
-  console.log('===token===', token);
+  // console.log('===token===', token);
 
   if (!token) {
     console.log('===token=failed==');

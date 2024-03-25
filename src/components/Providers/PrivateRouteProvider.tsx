@@ -1,5 +1,5 @@
 'use client';
-import { E_Routes } from '@/types';
+import { E_DashboardRoutes } from '@/types';
 import { E_SearchParam } from '@/types/search.params.enum';
 import { useSession } from 'next-auth/react';
 import { usePathname, redirect } from 'next/navigation';
@@ -17,6 +17,6 @@ export const PrivateRouteProvider = ({ children }: I_PrivateProviderProps) => {
   }
 
   redirect(
-    `${E_Routes.signIn}?${E_SearchParam.callbackUrl}=${pathName.slice(1)}`
+    `${E_DashboardRoutes.signIn}?${E_SearchParam.callbackUrl}=${pathName.slice(1)}`
   );
 };

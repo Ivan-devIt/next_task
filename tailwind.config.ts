@@ -5,7 +5,7 @@ const config: Config = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/**/*.{ts,tsx}'
+    './src/**/*.{js,ts,jsx,tsx,mdx}'
   ],
   theme: {
     extend: {
@@ -24,6 +24,10 @@ const config: Config = {
         '3xl': '1760px',
         '4xl': '1920px',
         '5xl': '2560px'
+      },
+
+      height: {
+        ['header-lg']: '4.25rem'
       },
 
       fontSize: {
@@ -58,8 +62,8 @@ const config: Config = {
       },
 
       colors: {
-        primary: '#42ABDE',
-        primaryDark: '#2194CC',
+        // primary: '#42ABDE',
+        // primaryDark: '#2194CC',
         secondaryDark: '#231F20',
         gray: '#808080',
         black: '#231F20',

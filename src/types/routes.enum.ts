@@ -1,7 +1,12 @@
-export enum E_Routes {
+export enum E_ApiRoutes {
   api = '/api',
-  users = '/api/users',
+  users = '/api/users'
+}
+
+export enum E_DashboardRoutes {
+  dashboard = '/dashboard',
+  users = '/dashboard/users',
   signIn = '/sign-in',
   admin = '/admin',
-  dashboard = '/dashboard'
+  profile = '/profile'
 }

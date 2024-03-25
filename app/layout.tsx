@@ -30,7 +30,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <Toaster position="top-center" />
         <SessionProvider>
           <NavBar />
-          <main className={'p-5'}>{children}</main>
+          <main className={''}>{children}</main>
           {/* <Footer /> */}
         </SessionProvider>
       </body>

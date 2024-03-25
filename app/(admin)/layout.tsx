@@ -1,12 +1,16 @@
 import { FC, ReactNode } from 'react';
 import { PrivateRouteProvider } from '@/components/Providers';
 
-interface DashboardProps {
+interface I_AdminDashboardProps {
   children: ReactNode;
 }
 
-const Dashboard: FC<DashboardProps> = ({ children }) => {
-  return <PrivateRouteProvider>{children}</PrivateRouteProvider>;
+const AdmonDashboard: FC<I_AdminDashboardProps> = ({ children }) => {
+  return (
+    <PrivateRouteProvider>
+      <div>{children}</div>
+    </PrivateRouteProvider>
+  );
 };
 
-export default Dashboard;
+export default AdmonDashboard;

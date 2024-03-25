@@ -3,7 +3,7 @@ import { loginShema } from '@/utils/validation/schemas';
 import { useState } from 'react';
 import { ZodError } from 'zod';
 import { signIn } from 'next-auth/react';
-import { E_Routes } from '@/types/routes.enum';
+import { E_DashboardRoutes } from '@/types/routes.enum';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { E_SearchParam } from '@/types/search.params.enum';
 import toast from 'react-hot-toast';
@@ -54,13 +54,15 @@ export const useSignInForm = () => {
   const handleSignIn = async (formData: I_User) => {
     const signInData = await signIn('credentials', {
       ...formData,
-      // callbackUrl: E_Routes.dashboard
+      // callbackUrl: E_DashboardRoutes.dashboard
       redirect: false
     });
 
     if (!!signInData && !signInData.error) {
       // router.refresh();
-      router.push(!!callbackUrl ? `/${callbackUrl}` : E_Routes.dashboard);
+      router.push(
+        !!callbackUrl ? `/${callbackUrl}` : E_DashboardRoutes.dashboard
+      );
     }
 
     if (!!signInData && !!signInData.error) {

@@ -2,14 +2,14 @@
 import Link from 'next/link';
 import { Logo } from '..';
 import { useSession, signOut } from 'next-auth/react';
-import { E_Routes } from '@/types/routes.enum';
+import { E_DashboardRoutes } from '@/types/routes.enum';
 
 export const NavBar = () => {
   const session = useSession();
   console.log('==nav session==', session);
 
   return (
-    <header className="py-4 px-5  bg-indigo-950">
+    <header className="py-4 px-5  bg-indigo-950 h-header-lg size-header-lg">
       <div className="flex justify-between items-center max-w-screen-3xl mx-auto">
         <a href="/">
           <Logo />
@@ -22,13 +22,20 @@ export const NavBar = () => {
           >
             {ifNotAutorized ? 'Sign in' : 'Sign out'}
           </Link> */}
-          {session?.data && <Link href={E_Routes.dashboard}>Dashboard</Link>}
+          {/* {session?.data && (
+            <Link href={E_DashboardRoutes.profile}>Profile</Link>
+          )} */}
+          {/* {session?.data && (
+            <Link href={E_DashboardRoutes.dashboard}>Dashboard</Link>
+          )} */}
+
+          {session?.data && <Link href={E_DashboardRoutes.users}>Users</Link>}
           {session?.data ? (
             <Link href={'#'} onClick={() => signOut({ callbackUrl: '/' })}>
               Sign Out
             </Link>
           ) : (
-            <Link href={E_Routes.signIn}>Sign In</Link>
+            <Link href={E_DashboardRoutes.signIn}>Sign In</Link>
           )}
         </nav>
       </div>
