@@ -1,5 +1,3 @@
-'use server';
-// import { UsersList } from '@/components/UsersList/UsersList';
 import { I_Pagination, I_ResponseMessage, T_UserPublic } from '@/types';
 import { getSession } from 'next-auth/react';
 import { cookies } from 'next/headers';

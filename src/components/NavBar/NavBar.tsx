@@ -6,7 +6,7 @@ import { E_DashboardRoutes } from '@/types/routes.enum';
 
 export const NavBar = () => {
   const session = useSession();
-  console.log('==nav session==', session);
+  // console.log('==nav session==', session);
 
   return (
     <header className="py-4 px-5  bg-indigo-950 h-header-lg size-header-lg">
