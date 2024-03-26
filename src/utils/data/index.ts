@@ -1,0 +1,1 @@
+export { navigateData } from './navigateData';

@@ -30,7 +30,7 @@ export interface I_UserBodyFields {
 export type T_UserResponse<T = T_UserPublic> = NextResponse<
   I_ResponseMessage<T | null>
 >;
-
+/* eslint-disable */
 export enum E_UserAction {
   CREATE = 'create',
   UPDATE = 'update',

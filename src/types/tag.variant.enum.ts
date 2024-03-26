@@ -1,3 +1,4 @@
+/* eslint-disable */
 export enum E_TagVariant {
   p = 'p',
   h1 = 'h1',

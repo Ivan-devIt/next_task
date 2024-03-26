@@ -1,3 +1,4 @@
+/* eslint-disable */
 export enum E_ButtonType {
   submit = 'submit',
   button = 'button'

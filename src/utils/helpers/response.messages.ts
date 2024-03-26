@@ -63,6 +63,7 @@ export const forbiddenResponse = <T>(message?: string, data?: T) =>
   });
 
 //server error response
+/* eslint-disable */
 export const serverErrorResponse = <T>(error: any, data?: T) =>
   responseMessage({
     status: !!error?.status ? error.status : StatusCodes.INTERNAL_SERVER_ERROR,

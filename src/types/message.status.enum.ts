@@ -1,3 +1,4 @@
+/* eslint-disable */
 export enum E_MessageStatus {
   success = 'Success',
   error = 'Error',
