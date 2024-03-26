@@ -8,5 +8,6 @@ export enum E_DashboardRoutes {
   users = '/dashboard/users',
   signIn = '/sign-in',
   admin = '/admin',
-  profile = '/profile'
+  profile = '/dashboard/profile',
+  news = '/dashboard/news'
 }

@@ -1,4 +1,6 @@
 export enum E_Pages {
   dashboard = 'dashboard',
-  profile = 'profile'
+  profile = 'profile',
+  users = 'users',
+  news = 'news'
 }
