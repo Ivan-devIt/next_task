@@ -42,8 +42,8 @@ body {
   @apply focus:outline-none focus:ring focus:ring-violet-600;
 }
 
-@layer utilities {
+/* @layer utilities {
   .head-height {
     @apply;
   }
-}
+} */

@@ -1,4 +1,5 @@
 export { getPaginataionOptions } from './getPaginataionOptions';
+export { getIncludesPages } from './getIncludesPages';
 export {
   responseMessage,
   notFoundResponse,

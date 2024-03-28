@@ -6,8 +6,12 @@ export enum E_ApiRoutes {
   users = '/api/users'
 }
 
+export enum E_CommonRoutes {
+  home = '/',
+  signIn = `/${E_Pages.sign_in}`
+}
+
 export enum E_DashboardRoutes {
-  signIn = '/sign-in',
   // admin = '/admin',
 
   //private routes
@@ -17,5 +21,7 @@ export enum E_DashboardRoutes {
   users_create = `/${E_Pages.dashboard}/${E_Pages.users}/${E_Pages.create}`,
   users_remove = `/${E_Pages.dashboard}/${E_Pages.users}/${E_Pages.remove}`,
   profile = `/${E_Pages.dashboard}/${E_Pages.profile}`,
-  news = `/${E_Pages.dashboard}/${E_Pages.news}`
+  news = `/${E_Pages.dashboard}/${E_Pages.news}`,
+
+  cambur = `/${E_Pages.dashboard}/${E_Pages.users}/${E_Pages.update}/${E_Pages.news}/${E_Pages.profile}/${E_Pages.users}` //TODO remove this for text
 }

@@ -2,7 +2,6 @@ import {
   AddUserIcon,
   SettingIcon,
   TrashIcon,
-  UserIcon,
   UsersIcon
 } from '@/components/Ui/Icons';
 import { E_DashboardRoutes, E_UserAction } from '@/types';
@@ -20,7 +19,7 @@ export const userControllList = [
     title: 'Users list',
     action: E_UserAction.SEARCH,
     icon: <UsersIcon className="h-full w-full" />,
-    link: E_DashboardRoutes.users_update //TODO
+    link: E_DashboardRoutes.users //TODO
   },
   {
     id: '3',

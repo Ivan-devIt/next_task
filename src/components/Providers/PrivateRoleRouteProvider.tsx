@@ -1,5 +1,5 @@
 'use client';
-import { E_DashboardRoutes, E_Role } from '@/types';
+import { E_CommonRoutes, E_Role } from '@/types';
 import { E_SearchParam } from '@/types/search.params.enum';
 import { useSession } from 'next-auth/react';
 import { usePathname, redirect } from 'next/navigation';
@@ -26,7 +26,7 @@ export const PrivateRoleRouteProvider = ({
   //redirect if not authenticated
   if (!isAutenticated) {
     return redirect(
-      `${E_DashboardRoutes.signIn}?${E_SearchParam.callbackUrl}=${pathName.slice(1)}`
+      `${E_CommonRoutes.signIn}?${E_SearchParam.callbackUrl}=${pathName.slice(1)}`
     );
   }
 
@@ -36,7 +36,7 @@ export const PrivateRoleRouteProvider = ({
       return <>{children}</>;
     } else {
       return redirect(
-        `${E_DashboardRoutes.signIn}?${E_SearchParam.callbackUrl}=${pathName.slice(1)}`
+        `${E_CommonRoutes.signIn}?${E_SearchParam.callbackUrl}=${pathName.slice(1)}`
       );
     }
   }
@@ -47,7 +47,7 @@ export const PrivateRoleRouteProvider = ({
       return <>{children}</>;
     } else {
       return redirect(
-        `${E_DashboardRoutes.signIn}?${E_SearchParam.callbackUrl}=${pathName.slice(1)}`
+        `${E_CommonRoutes.signIn}?${E_SearchParam.callbackUrl}=${pathName.slice(1)}`
       );
     }
   }

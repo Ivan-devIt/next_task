@@ -4,7 +4,7 @@ import { Logo } from '..';
 import { useSession, signOut } from 'next-auth/react';
 import { E_DashboardRoutes } from '@/types/routes.enum';
 import { linksByRoles } from './data';
-import { E_Role } from '@/types';
+import { E_CommonRoutes, E_Role } from '@/types';
 
 export const NavBar = () => {
   const session = useSession();
@@ -38,7 +38,7 @@ export const NavBar = () => {
                   Sign Out
                 </Link>
               ) : (
-                <Link href={E_DashboardRoutes.signIn}>Sign In</Link>
+                <Link href={E_CommonRoutes.signIn}>Sign In</Link>
               )}
             </li>
           </ul>

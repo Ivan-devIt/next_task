@@ -4,12 +4,12 @@ import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import prisma from '@/utils/lib/prisma';
 import { compare } from 'bcrypt';
-import { E_DashboardRoutes } from '@/types/routes.enum';
+import { E_CommonRoutes } from '@/types/routes.enum';
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   pages: {
-    signIn: E_DashboardRoutes.signIn
+    signIn: E_CommonRoutes.signIn
   },
   secret: String(process.env.NEXTAUTH_SECRET),
 

@@ -13,5 +13,5 @@ export { E_MessageStatus } from './message.status.enum';
 export { E_ButtonType, E_ButtonVariant } from './button.enum';
 export { E_TagVariant } from './tag.variant.enum';
 export { E_Pages } from './pages.enum';
-export { E_DashboardRoutes, E_ApiRoutes } from './routes.enum';
+export { E_DashboardRoutes, E_ApiRoutes, E_CommonRoutes } from './routes.enum';
 export { type T_IconProps } from './icons';
